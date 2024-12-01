@@ -1,0 +1,9 @@
+[package]
+name = "aoc2024"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dotenv = "0.15.0"
+minreq = { version = "2.12.0", features = ["https"] }
+regex = "1.11.0"
