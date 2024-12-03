@@ -2,11 +2,13 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufReader, Read, Write};
 
-use crate::question::day1;
+use crate::question::*;
 
 pub(crate) fn day_hashmap() -> HashMap<u32, DaySolver> {
     let mut day_map = HashMap::new();
     day_map.insert(1, day1::SOLVER);
+    day_map.insert(2, day2::SOLVER);
+    day_map.insert(3, day3::SOLVER);
     day_map
 }
 

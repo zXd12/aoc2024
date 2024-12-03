@@ -2,9 +2,9 @@ mod params;
 mod question;
 mod day_solver;
 
-const CURRENT_DAY: u32 = 2;
+const CURRENT_DAY: u32 = 3;
 
-const REPEATS: u32 = 100_000;
+const REPEATS: u32 = 10_000;
 
 fn main() {
     let params = params::Params::new().parse_args();
@@ -71,7 +71,7 @@ fn timed_run(fun: fn(&str) -> String, input: &str, repeats: u32) -> (String, std
         fun(input);
     }
     let result = fun(input);
-    let duration = start.elapsed()/10000;
+    let duration = start.elapsed()/repeats;
     (result, duration)
 }
 

@@ -1,6 +1,6 @@
 // --- Day X: Title ---
 
-use super::day::{test_day, Day};
+use crate::day_solver::{test_day, DaySolver};
 
 fn part1(input: &str) -> String {
     "".to_string()
@@ -12,7 +12,7 @@ fn part2(input: &str) -> String {
 
 const SAMPLE_INPUT: &str = "";
 
-pub const SOLVER: Day = Day::new(
+pub const SOLVER: DaySolver = DaySolver::new(
     part1,
     SAMPLE_INPUT,
     "",
