@@ -7,3 +7,10 @@ edition = "2021"
 dotenv = "0.15.0"
 minreq = { version = "2.12.0", features = ["https"] }
 regex = "1.11.0"
+
+# bench compile flags
+[profile.bench]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "debuginfo"

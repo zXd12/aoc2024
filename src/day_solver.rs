@@ -23,6 +23,8 @@ pub struct DaySolver {
     pub part2_sample_input: &'static str,
     #[allow(dead_code)]
     pub part2_sample_solution: &'static str,
+    #[allow(dead_code)]
+    pub day_number: u32,
 }
 
 impl DaySolver {
@@ -33,6 +35,7 @@ impl DaySolver {
         part2: fn(&str) -> String,
         part2_sample_input: &'static str,
         part2_sample_solution: &'static str,
+        day_number: u32,
     ) -> Self {
         Self {
             part1,
@@ -41,11 +44,12 @@ impl DaySolver {
             part2,
             part2_sample_input,
             part2_sample_solution,
+            day_number,
         }
     }
 
     pub fn get_input_file(&self, session: Option<String>, day: u32) -> String {
-        match File::open(format!("input/day{}.txt", day)) {
+        match File::open(format!("input/day{:02}.txt", day)) {
             Ok(file) => {
                 let mut buf_reader = BufReader::new(file);
                 let mut input = String::new();
@@ -56,7 +60,7 @@ impl DaySolver {
                 match err.kind() {
                     std::io::ErrorKind::NotFound => {
                         let input = self.get_session_input(session.unwrap(), day).unwrap();
-                        let mut file = File::create(format!("input/day{}.txt", day)).unwrap();
+                        let mut file = File::create(format!("input/day{:02}.txt", day)).unwrap();
                         file.write_all(input.as_bytes()).unwrap();
                         input
                     }
@@ -76,11 +80,17 @@ impl DaySolver {
     }
 }
 
+
 macro_rules! test_day {
     ($day:ident) => {
+        extern crate test;
+
         #[cfg(test)]
         mod tests {
             use super::*;
+            use std::fs::File;
+            use std::io::{BufReader, Read};
+            use test::Bencher;
 
             #[test]
             fn part1_sample() {
@@ -90,6 +100,22 @@ macro_rules! test_day {
             #[test]
             fn part2_sample() {
                 assert_eq!(($day.part2)($day.part2_sample_input), $day.part2_sample_solution);
+            }
+
+            #[bench]
+            fn bench_part1(b: &mut Bencher) {
+                let mut buf_reader = BufReader::new(File::open(format!("input/day{:02}.txt", $day.day_number)).unwrap());
+                let mut input = String::new();
+                buf_reader.read_to_string(&mut input).unwrap();
+                b.iter(|| ($day.part1)(&input));
+            }
+
+            #[bench]
+            fn bench_part2(b: &mut test::Bencher) {
+                let mut buf_reader = BufReader::new(File::open(format!("input/day{:02}.txt", $day.day_number)).unwrap());
+                let mut input = String::new();
+                buf_reader.read_to_string(&mut input).unwrap();
+                b.iter(|| ($day.part2)(&input));
             }
         }
     };
