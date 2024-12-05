@@ -4,7 +4,7 @@ mod day_solver;
 mod params;
 mod question;
 
-const CURRENT_DAY: u32 = 3;
+const CURRENT_DAY: u32 = 4;
 
 fn main() {
     let params = params::Params::new().parse_args();
@@ -19,14 +19,14 @@ fn main() {
                     match question {
                         0 => {
                             println!();
-                            println!("Part 1: {}", (day_solver.part2)(&input));
+                            println!("Part 1: {}", (day_solver.part1)(&input));
                             println!("Part 2: {}", (day_solver.part2)(&input));
                         }
                         1 => {
-                            println!("Part 1: {}", (day_solver.part1)(&input));
+                            println!(" Part 1: {}", (day_solver.part1)(&input));
                         }
                         2 => {
-                            println!("Part 2: {}", (day_solver.part2)(&input));
+                            println!(" Part 2: {}", (day_solver.part2)(&input));
                         }
                         _ => println!("Invalid question number: {}", question),
                     }
