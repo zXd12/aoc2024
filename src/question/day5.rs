@@ -62,29 +62,28 @@ fn part2(input: &str) -> String {
     let ordering_list = construct_ordering_list(bytes, &mut i);
     i += 1;
     let mut result = 0;
-    while i < bytes.len() {
+    'lines: while i < bytes.len() {
         let mut disalowed_pages: u128 = 0;
-        let mut page_count: usize = 2;
         let mut pages = 0;
-        disalowed_pages |= ordering_list[parse_page_number(bytes, i) as usize - 10];
+        let number = parse_page_number(bytes, i);
+        pages |= 1 << number;
+        disalowed_pages |= ordering_list[number as usize - 10];
         i += 3;
         while bytes[i-1] != b'\n' {
             let number = parse_page_number(bytes, i);
+            pages |= 1 << number;
             if disalowed_pages & (1 << number) != 0 {
                 while bytes[i-1] != b'\n' {
+                    let number = parse_page_number(bytes, i);
                     pages |= 1 << number;
                     i += 3;
                 }
                 result += reorder_pages(pages, ordering_list);
+                continue 'lines;
             }
-            pages |= 1 << number;
             disalowed_pages |= ordering_list[number as usize - 10];
             i += 3;
-            page_count += 1;
         }
-        // the number of pages is always odd
-        let middle_page_index = (page_count.div_euclid(2))*3;
-        result += parse_page_number(bytes, i - middle_page_index) as u32;
     }
     result.to_string()
 }
