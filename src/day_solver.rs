@@ -10,6 +10,7 @@ pub(crate) fn day_hashmap() -> HashMap<u32, DaySolver> {
     day_map.insert(2, day2::SOLVER);
     day_map.insert(3, day3::SOLVER);
     day_map.insert(4, day4::SOLVER);
+    day_map.insert(5, day5::SOLVER);
     day_map
 }
 
@@ -72,7 +73,7 @@ impl DaySolver {
     }
 
     pub fn get_session_input(&self, session: String, day: u32) -> Result<String, Box<dyn std::error::Error>> {
-        let path = format!("https://adventofcode.com/2023/day/{}/input", day);
+        let path = format!("https://adventofcode.com/2024/day/{}/input", day);
         let response = minreq::get(&path)
             .with_header("cookie", &format!("session={}", session))
             .send()?;

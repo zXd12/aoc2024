@@ -80,13 +80,10 @@ fn part2(input: &str) -> String {
     let mut count = 0;
     let line_lenght = input.lines().next().unwrap().len() + 1;
     let bytes = input.as_bytes();
-    for i in  0..bytes.len() - line_lenght {
+    for i in line_lenght + 1..bytes.len() - line_lenght - 1 {
         if bytes[i] == b'A' {
-            if ((i + 1 + line_lenght < bytes.len() && i as i32 - 1 as i32 - line_lenght as i32 > 0)
-                && (bytes[i + 1 + line_lenght] + bytes[i - 1 - line_lenght] == b'B' + b'M'))
-                && ((i + line_lenght - 1 < bytes.len()
-                    && (i as i32 + 1 as i32 - line_lenght as i32) > 0)
-                    && (bytes[i + 1 - line_lenght] + bytes[i - 1 + line_lenght] == b'B' + b'M'))
+            if (bytes[i + 1 - line_lenght] + bytes[i - 1 + line_lenght] == b'S' + b'M')
+                && (bytes[i + 1 + line_lenght] + bytes[i - 1 - line_lenght] == b'S' + b'M')
             {
                 count += 1;
             }
@@ -119,7 +116,7 @@ SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX",
-    "31",
+    "9",
     4,
 );
 

@@ -4,7 +4,7 @@ mod day_solver;
 mod params;
 mod question;
 
-const CURRENT_DAY: u32 = 4;
+const CURRENT_DAY: u32 = 5;
 
 fn main() {
     let params = params::Params::new().parse_args();
