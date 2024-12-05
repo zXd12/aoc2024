@@ -13,6 +13,9 @@ fn part1(input: &str) -> String {
         for i in 0..page_count {
             let number = (line_bytes[i*3] - b'0') * 10 + line_bytes[i*3+1] - b'0';
             if disalowed_pages & (1 << number) != 0 {
+                while bytes[i-1] != b'\n' {
+                    i += 3;
+                }
                 continue 'line;
             }
             disalowed_pages |= ordering_list[number as usize - 10];
@@ -29,8 +32,8 @@ fn construct_ordering_list(lines: &mut std::str::Lines) -> [u128; 90] {
     let mut current_line = lines.next().unwrap().as_bytes();
     while current_line.len() != 0 {
         // page numbers are Always length 2 in the input
-        let number1 = (current_line[0] - b'0') * 10 + current_line[1] - b'0';
-        let number2 = (current_line[3] - b'0') * 10 + current_line[4] - b'0';
+        let number1 = parse_page_number(bytes, *i);
+        let number2 = parse_page_number(bytes, *i + 3);
         ordering_list[number2 as usize - 10] |= 1 << number1;
         current_line = lines.next().unwrap().as_bytes();
     }
@@ -38,25 +41,32 @@ fn construct_ordering_list(lines: &mut std::str::Lines) -> [u128; 90] {
 }
 
 fn part2(input: &str) -> String {
-    let mut lines = input.lines();
-    let ordering_list = construct_ordering_list(&mut lines);
+    let bytes = input.as_bytes();
+    let mut i = 0;
+    let ordering_list = construct_ordering_list(bytes, &mut i);
+    i += 1;
     let mut result = 0;
-    for line in lines {
-        let mut disalowed_pages = 0;
-        let line_bytes = line.as_bytes();
-        let page_count = (line_bytes.len()+1)/3;
-        let mut reorder_needed = false;
+    'lines: while i < bytes.len() {
+        let mut disalowed_pages: u128 = 0;
         let mut pages = 0;
-        for i in 0..page_count {
-            let number = (line_bytes[i*3] - b'0') * 10 + line_bytes[i*3+1] - b'0';
-            if !reorder_needed && disalowed_pages & (1 << number) != 0 {
-                reorder_needed = true;
-            }
+        let number = parse_page_number(bytes, i);
+        pages |= 1 << number;
+        disalowed_pages |= ordering_list[number as usize - 10];
+        i += 3;
+        while bytes[i-1] != b'\n' {
+            let number = parse_page_number(bytes, i);
             pages |= 1 << number;
+            if disalowed_pages & (1 << number) != 0 {
+                while bytes[i-1] != b'\n' {
+                    let number = parse_page_number(bytes, i);
+                    pages |= 1 << number;
+                    i += 3;
+                }
+                result += reorder_pages(pages, ordering_list);
+                continue 'lines;
+            }
             disalowed_pages |= ordering_list[number as usize - 10];
-        }
-        if reorder_needed {
-            result += reorder_pages(pages, ordering_list)
+            i += 3;
         }
     }
     result.to_string()
