@@ -26,14 +26,15 @@ fn part1(input: &str) -> String {
         while bytes[i-1] != b'\n' {
             let number = parse_page_number(bytes, i);
             if disalowed_pages & (1 << number) != 0 {
+                while bytes[i-1] != b'\n' {
+                    i += 3;
+                }
                 continue 'line;
             }
             disalowed_pages |= ordering_list[number as usize - 10];
             i += 3;
             page_count += 1;
         }
-        println!("{}", bytes[i-1] != b'\n');
-        println!("{disalowed_pages:b}");
         // the number of pages is always odd
         let middle_page_index = (page_count.div_euclid(2))*3;
         result += parse_page_number(bytes, i - middle_page_index) as u32;
@@ -47,7 +48,7 @@ fn construct_ordering_list(bytes: &[u8], i: &mut usize) -> [u128; 90] {
     while next_char != b'\n' {
         // page numbers are Always length 2 in the input
         let number1 = parse_page_number(bytes, *i);
-        let number2 = parse_page_number(bytes, *i);
+        let number2 = parse_page_number(bytes, *i + 3);
         ordering_list[number2 as usize - 10] |= 1 << number1;
         *i += 6;
         next_char = bytes[*i];
@@ -56,26 +57,34 @@ fn construct_ordering_list(bytes: &[u8], i: &mut usize) -> [u128; 90] {
 }
 
 fn part2(input: &str) -> String {
-    let mut lines = input.lines();
-    let ordering_list = [0; 90]; // construct_ordering_list(&mut lines);
+    let bytes = input.as_bytes();
+    let mut i = 0;
+    let ordering_list = construct_ordering_list(bytes, &mut i);
+    i += 1;
     let mut result = 0;
-    for line in lines {
-        let mut disalowed_pages = 0;
-        let line_bytes = line.as_bytes();
-        let page_count = (line_bytes.len()+1)/3;
-        let mut reorder_needed = false;
+    while i < bytes.len() {
+        let mut disalowed_pages: u128 = 0;
+        let mut page_count: usize = 2;
         let mut pages = 0;
-        for i in 0..page_count {
-            let number = parse_page_number(line_bytes, i*3);
-            if !reorder_needed && disalowed_pages & (1 << number) != 0 {
-                reorder_needed = true;
+        disalowed_pages |= ordering_list[parse_page_number(bytes, i) as usize - 10];
+        i += 3;
+        while bytes[i-1] != b'\n' {
+            let number = parse_page_number(bytes, i);
+            if disalowed_pages & (1 << number) != 0 {
+                while bytes[i-1] != b'\n' {
+                    pages |= 1 << number;
+                    i += 3;
+                }
+                result += reorder_pages(pages, ordering_list);
             }
             pages |= 1 << number;
             disalowed_pages |= ordering_list[number as usize - 10];
+            i += 3;
+            page_count += 1;
         }
-        if reorder_needed {
-            result += reorder_pages(pages, ordering_list)
-        }
+        // the number of pages is always odd
+        let middle_page_index = (page_count.div_euclid(2))*3;
+        result += parse_page_number(bytes, i - middle_page_index) as u32;
     }
     result.to_string()
 }
