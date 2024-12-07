@@ -4,11 +4,9 @@ mod day_solver;
 mod params;
 mod question;
 
-const CURRENT_DAY: u32 = 5;
-
 fn main() {
-    let params = params::Params::new().parse_args();
     let day_map = day_solver::day_hashmap();
+    let params = params::Params::new().parse_args(day_map.len() as u32);
 
     match params.question_list {
         Some(questions) => {
@@ -36,7 +34,7 @@ fn main() {
             }
         }
         None => {
-            for day in 1..=CURRENT_DAY {
+            for day in 1..=day_map.len() as u32 {
                 if let Some(day_solver) = day_map.get(&day) {
                     let input = day_solver.get_input_file(params.session.clone(), day);
                     println!("Day {}", day);

@@ -19,6 +19,7 @@ pub const SOLVER: DaySolver = DaySolver::new(
     part2,
     SAMPLE_INPUT,
     "",
+    0
 );
 
 test_day!(SOLVER);

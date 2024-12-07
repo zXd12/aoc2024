@@ -11,6 +11,8 @@ pub(crate) fn day_hashmap() -> HashMap<u32, DaySolver> {
     day_map.insert(3, day3::SOLVER);
     day_map.insert(4, day4::SOLVER);
     day_map.insert(5, day5::SOLVER);
+    day_map.insert(6, day6::SOLVER);
+    day_map.insert(7, day7::SOLVER);
     day_map
 }
 

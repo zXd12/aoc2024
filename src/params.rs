@@ -1,7 +1,5 @@
 use std::env;
 
-use crate::CURRENT_DAY;
-
 pub struct Params {
     pub session: Option<String>,
     pub question_list: Option<Vec<(u32, u32)>>,
@@ -20,7 +18,7 @@ impl Params {
         }
     }
 
-    pub fn parse_args(mut self) -> Self {
+    pub fn parse_args(mut self, curent_day: u32) -> Self {
         let args = env::args().collect::<Vec<String>>();
         let mut arg_index = 1;
         let day_regex = regex::Regex::new(r"^(\d+)(:(1|2))?$").unwrap();
@@ -35,8 +33,8 @@ impl Params {
                                 self.session = Some(args.get(arg_index).unwrap().to_string());
                             }
                             "-c" | "--current" => match self.question_list {
-                                Some(ref mut list) => list.push((CURRENT_DAY, 0)),
-                                None => self.question_list = Some(vec![(CURRENT_DAY, 0)]),
+                                Some(ref mut list) => list.push((curent_day, 0)),
+                                None => self.question_list = Some(vec![(curent_day, 0)]),
                             }
                             _ => panic!("Invalid option: {}", arg),
                         }
@@ -46,7 +44,7 @@ impl Params {
                         let question = captures
                             .get(3)
                             .map_or(0, |m| m.as_str().parse::<u32>().unwrap());
-                        if day > CURRENT_DAY {
+                        if day > curent_day {
                             panic!("Day {} is not available yet", day);
                         }
                         match self.question_list {
